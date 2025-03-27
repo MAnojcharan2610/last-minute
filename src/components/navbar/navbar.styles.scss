@@ -1,3 +1,110 @@
-.navbar-div{
-    
+// Navbar.scss
+$primary-color: #333;
+$secondary-color: #666;
+$hover-color: #000;
+$transition-speed: 0.3s;
+$breakpoint-mobile: 768px;
+
+.navbar {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: relative;
+  width: 100%;
+
+  .navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .navbar-logo {
+    a {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: $primary-color;
+      text-decoration: none;
+    }
+  }
+
+  .nav-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    .nav-item {
+      margin-left: 1.5rem;
+
+      .nav-link {
+        color: $secondary-color;
+        text-decoration: none;
+        transition: color $transition-speed ease;
+
+        &:hover {
+          color: $hover-color;
+        }
+      }
+    }
+  }
+
+  // Mobile Menu Icon
+  .menu-icon {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+
+    span {
+      width: 25px;
+      height: 3px;
+      background-color: $primary-color;
+      margin: 3px 0;
+      transition: all $transition-speed ease;
+    }
+  }
+
+  @media screen and (max-width: $breakpoint-mobile) {
+    .menu-icon {
+      display: flex;
+      z-index: 10;
+    }
+
+    .nav-menu {
+      position: fixed;
+      left: -100%;
+      top: 0;
+      flex-direction: column;
+      background-color: #fff;
+      width: 100%;
+      height: 100vh;
+      text-align: center;
+      padding-top: 50%;
+      transition: left $transition-speed ease;
+
+      &.active {
+        left: 0;
+      }
+
+      .nav-item {
+        margin: 1.5rem 0;
+      }
+    }
+
+    .menu-icon {
+      &.open {
+        span:nth-child(1) {
+          transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        span:nth-child(2) {
+          opacity: 0;
+        }
+        
+        span:nth-child(3) {
+          transform: rotate(45deg) translate(-5px, -6px);
+        }
+      }
+    }
+  }
 }

@@ -6,28 +6,29 @@ import RoomsTravels from "./routes/rooms-travels/rooms-travels.component"
 import { useEffect } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "./utils/firebase"
+import Rooms from "./routes/rooms/rooms.component"
 
 function App() {
   const {user,handleSetUser}=useUserContext();
-  
-  useEffect(() => {
-    const checkAuthState = async () => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if(user){
-          handleSetUser(user);
-          // setIsLoading(false);
-        }else{
-          // setIsLoading(false);
-          handleSetUser(null);
-        }
-      });
-      return () => unsubscribe();
-    };
-    // setIsLoading(true);
-    checkAuthState();      
-  }, [handleSetUser]);
+  // console.log(user)
+  // useEffect(() => {
+  //   const checkAuthState = async () => {
+  //     const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //       if(user){
+  //         handleSetUser(user);
+  //         // setIsLoading(false);
+  //       }else{
+  //         // setIsLoading(false);
+  //         handleSetUser(null);
+  //       }
+  //     });
+  //     return () => unsubscribe();
+  //   };
+  //   // setIsLoading(true);
+  //   checkAuthState();      
+  // }, [handleSetUser]);
 
-  if(!user){
+  if(user){
     return <Login/>
   }
 
@@ -36,6 +37,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navbar/>}>
           <Route index  element={<RoomsTravels/>} />
+          <Route path="rooms" element={<Rooms/>} />
         </Route>
       </Routes>
     </>
