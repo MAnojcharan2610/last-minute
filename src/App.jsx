@@ -7,6 +7,8 @@ import { useEffect } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "./utils/firebase"
 import Rooms from "./routes/rooms/rooms.component"
+import Travels from "./routes/travels/travels.component"
+import '@fontsource/lora'
 
 function App() {
   const {user,handleSetUser}=useUserContext();
@@ -38,6 +40,7 @@ function App() {
         <Route path="/" element={<Navbar/>}>
           <Route index  element={<RoomsTravels/>} />
           <Route path="rooms" element={<Rooms/>} />
+          <Route path="travels" element={<Travels/>} />
         </Route>
       </Routes>
     </>
