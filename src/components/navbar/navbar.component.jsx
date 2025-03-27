@@ -31,13 +31,13 @@ const Navbar = () => {
       
               <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
                 <li className="nav-item">
-                  <a href="/home" className="nav-link">Home</a>
+                  <a href="/rooms" className="nav-link">Rooms</a>
                 </li>
                 <li className="nav-item">
-                  <a href="/about" className="nav-link">About</a>
+                  <a href="/travels" className="nav-link">Travels</a>
                 </li>
                 <li className="nav-item">
-                  <a href="/contact" className="nav-link">Contact</a>
+                  <a href="/user" className="nav-link">User</a>
                 </li>
               </ul>
             </div>
