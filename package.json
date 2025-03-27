@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/lora": "^5.2.5",
     "dotenv": "^16.4.7",
     "firebase": "^11.5.0",
     "prop-types": "^15.8.1",
