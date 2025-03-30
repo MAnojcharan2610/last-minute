@@ -2,13 +2,17 @@
   box-sizing: border-box;
   margin: 0;
 }
+body{
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
 button{
   border: none;
   font-family: inherit;
   cursor: pointer;
   outline: none;
   transition: .25s ease;
-  font-family: "Lora", serif;
+  font-family: inherit;
   &:hover{
     scale: 1.05;
   }

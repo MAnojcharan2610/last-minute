@@ -1,50 +1,77 @@
 import './navbar.styles.scss'
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import LogoSvg from '../../assets/hotel-2-svgrepo-com.svg'
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation, Link,useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const location = useLocation();
+    const router = useNavigate();
 
-        const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-        const toggleMenu = () => {
-          setIsMenuOpen(!isMenuOpen);
+    useEffect(() => {
+        const handleScroll = () => {
+            const isScrolled = window.scrollY > 20;
+            setScrolled(isScrolled);
         };
-      
-        return (
-            <Fragment>
-          <nav className="navbar">
-            <div className="navbar-container">
-              <img src={LogoSvg} width={"40px"} />
-              <div className="navbar-logo">
-                <a href="/">ROOMS AND TRAVELS</a>
-              </div>
-      
-              <div 
-                className={`menu-icon ${isMenuOpen ? 'open' : ''}`} 
-                onClick={toggleMenu}
-              >
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-      
-              <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-                <li className="nav-item">
-                  <a href="/rooms" className="nav-link">Rooms</a>
-                </li>
-                <li className="nav-item">
-                  <a href="/travels" className="nav-link">Travels</a>
-                </li>
-                <li className="nav-item">
-                  <a href="/user" className="nav-link">User</a>
-                </li>
-              </ul>
-            </div>
-          </nav>
-          <Outlet/>
-          </Fragment>
-     );
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
+    const closeMenu = () => {
+        setIsMenuOpen(false);
+    };
+
+    const navLinks = [
+        { path: '/rooms', label: 'Rooms' },
+        { path: '/travels', label: 'Travels' },
+        { path: '/user', label: 'User' }
+    ];
+
+    return (
+        <Fragment>
+            <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+                <div className="navbar-container">
+                    <div className="navbar-brand">
+                        <img src={LogoSvg} alt="Logo" width="40px" onClick={()=>router('/')} />
+                        <Link to="/" className="navbar-logo">
+                            ROOMS AND TRAVELS
+                        </Link>
+                    </div>
+
+                    <div 
+                        className={`menu-icon ${isMenuOpen ? 'open' : ''}`} 
+                        onClick={toggleMenu}
+                        aria-label="Toggle menu"
+                    >
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                    <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
+                        {navLinks.map((link) => (
+                            <li 
+                                key={link.path} 
+                                className={`nav-item ${location.pathname === link.path ? 'active' : ''}`}
+                                onClick={closeMenu}
+                            >
+                                <Link to={link.path} className="nav-link">
+                                    {link.label}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </nav>
+            <Outlet/>
+        </Fragment>
+    );
 }
  
 export default Navbar;
