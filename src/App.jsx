@@ -8,7 +8,8 @@ import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "./utils/firebase"
 import Rooms from "./routes/rooms/rooms.component"
 import Travels from "./routes/travels/travels.component"
-import '@fontsource/lora'
+import User from './routes/user/user.component'
+import Booking from "./routes/booking/booking.component"
 
 function App() {
   const {user,handleSetUser}=useUserContext();
@@ -41,6 +42,8 @@ function App() {
           <Route index  element={<RoomsTravels/>} />
           <Route path="rooms" element={<Rooms/>} />
           <Route path="travels" element={<Travels/>} />
+          <Route path="user" element={<User/>} />
+          <Route path="booking" element={<Booking/>} />
         </Route>
       </Routes>
     </>

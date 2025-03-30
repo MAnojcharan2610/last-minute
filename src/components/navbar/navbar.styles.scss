@@ -1,111 +1,179 @@
-// Navbar.scss
-$primary-color: #333;
-$secondary-color: #666;
-$hover-color: #000;
+$primary-color: #2c3e50;
+$secondary-color: #34495e;
+$accent-color: #3498db;
+$hover-color: #2980b9;
 $transition-speed: 0.3s;
 $breakpoint-mobile: 768px;
 
 .navbar {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  position: relative;
-  width: 100%;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    transition: all $transition-speed ease;
 
-  .navbar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 auto;
-    padding: 1rem;
-  }
-
-  .navbar-logo {
-    a {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: $primary-color;
-      text-decoration: none;
+    &.scrolled {
+        background-color: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
     }
-    margin-left: 170px;
-  }
 
-  .nav-menu {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    .navbar-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 auto;
+        padding: 1rem 2rem;
+        max-width: 1200px;
+    }
 
-    .nav-item {
-      margin-left: 1.5rem;
+    .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        cursor: pointer;
+    }
 
-      .nav-link {
-        color: $secondary-color;
+    .navbar-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: $primary-color;
         text-decoration: none;
+        letter-spacing: 0.5px;
         transition: color $transition-speed ease;
 
         &:hover {
-          color: $hover-color;
+            color: $accent-color;
         }
-      }
-    }
-  }
-
-  // Mobile Menu Icon
-  .menu-icon {
-    display: none;
-    flex-direction: column;
-    cursor: pointer;
-
-    span {
-      width: 25px;
-      height: 3px;
-      background-color: $primary-color;
-      margin: 3px 0;
-      transition: all $transition-speed ease;
-    }
-  }
-
-  @media screen and (max-width: $breakpoint-mobile) {
-    .menu-icon {
-      display: flex;
-      z-index: 10;
     }
 
     .nav-menu {
-      position: fixed;
-      left: -100%;
-      top: 0;
-      flex-direction: column;
-      background-color: #fff;
-      width: 100%;
-      height: 100vh;
-      text-align: center;
-      padding-top: 50%;
-      transition: left $transition-speed ease;
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: 2rem;
 
-      &.active {
-        left: 0;
-      }
+        .nav-item {
+            position: relative;
 
-      .nav-item {
-        margin: 1.5rem 0;
-      }
+            .nav-link {
+                color: $secondary-color;
+                text-decoration: none;
+                font-weight: 500;
+                padding: 0.5rem 0;
+                transition: all $transition-speed ease;
+                position: relative;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 0;
+                    height: 2px;
+                    background-color: $accent-color;
+                    transition: width $transition-speed ease;
+                }
+
+                &:hover {
+                    color: $accent-color;
+
+                    &::after {
+                        width: 100%;
+                    }
+                }
+            }
+
+            &.active .nav-link {
+                color: $accent-color;
+
+                &::after {
+                    width: 100%;
+                }
+            }
+        }
     }
 
     .menu-icon {
-      &.open {
-        span:nth-child(1) {
-          transform: rotate(-45deg) translate(-5px, 6px);
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+        padding: 0.5rem;
+
+        span {
+            width: 25px;
+            height: 3px;
+            background-color: $primary-color;
+            margin: 2px 0;
+            transition: all $transition-speed ease;
+            border-radius: 2px;
         }
-        
-        span:nth-child(2) {
-          opacity: 0;
-        }
-        
-        span:nth-child(3) {
-          transform: rotate(45deg) translate(-5px, -6px);
-        }
-      }
     }
-  }
+
+    @media screen and (max-width: $breakpoint-mobile) {
+        .menu-icon {
+            display: flex;
+            z-index: 10;
+        }
+
+        .nav-menu {
+            position: fixed;
+            left: -100%;
+            top: 0;
+            flex-direction: column;
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            height: 100vh;
+            text-align: center;
+            padding-top: 5rem;
+            transition: all $transition-speed ease;
+            gap: 1.5rem;
+
+            &.active {
+                left: 0;
+            }
+
+            .nav-item {
+                margin: 0;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: all $transition-speed ease;
+
+                .nav-link {
+                    font-size: 1.2rem;
+                    padding: 1rem 0;
+                    display: block;
+
+                    &::after {
+                        display: none;
+                    }
+                }
+            }
+
+            &.active .nav-item {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-icon {
+            &.open {
+                span:nth-child(1) {
+                    transform: rotate(-45deg) translate(-5px, 6px);
+                }
+                
+                span:nth-child(2) {
+                    opacity: 0;
+                }
+                
+                span:nth-child(3) {
+                    transform: rotate(45deg) translate(-5px, -6px);
+                }
+            }
+        }
+    }
 }
