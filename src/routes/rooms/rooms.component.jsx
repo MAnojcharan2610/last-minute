@@ -8,7 +8,7 @@ import { FaIndianRupeeSign } from 'react-icons/fa6';
 const roomLocations = ["hyderabad", "chennai", "banglore"]
 
 const Rooms = () => {
-    const [selectedLocation, setSelectedLocation] = useState('');
+    const [selectedLocation, setSelectedLocation] = useState('hyderabad');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 

@@ -1,4 +1,133 @@
-.user-div{
-    padding: 20px;
-    padding-top: 90px;
-}
+.user-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    padding-top: 80px;
+    
+    .user-card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      
+      .user-header {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-bottom: 1px solid #eee;
+        
+        h2 {
+          margin: 0;
+          font-size: 1.5rem;
+          color: #333;
+        }
+      }
+      
+      .user-content {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        @media (min-width: 768px) {
+          flex-direction: row;
+          align-items: flex-start;
+        }
+        
+        .user-avatar {
+          width: 150px;
+          height: 150px;
+          margin-bottom: 1.5rem;
+          
+          @media (min-width: 768px) {
+            margin-right: 2rem;
+            margin-bottom: 0;
+          }
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #f1f1f1;
+          }
+          
+          .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e9ecef;
+            border-radius: 50%;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #6c757d;
+          }
+        }
+        
+        .user-details {
+          flex-grow: 1;
+          width: 100%;
+          margin-top: 30px;
+          
+          @media (min-width: 768px) {
+            width: auto;
+          }
+          
+          .detail-item {
+            margin-bottom: 1rem;
+            
+            .label {
+              display: block;
+              font-weight: 600;
+              color: #6c757d;
+              margin-bottom: 0.25rem;
+              
+              @media (min-width: 576px) {
+                display: inline-block;
+                width: 80px;
+                margin-bottom: 0;
+              }
+            }
+            
+            .value {
+              display: block;
+              color: #212529;
+              word-break: break-word;
+              
+              @media (min-width: 576px) {
+                display: inline-block;
+              }
+            }
+          }
+        }
+      }
+      
+      .user-actions {
+        padding: 1.5rem;
+        border-top: 1px solid #eee;
+        text-align: center;
+        
+        .sign-out-button {
+          background-color: #dc3545;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          padding: 0.75rem 1.5rem;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: 0.25s ease;
+          
+          &:hover {
+            background-color: #c82333;
+          }
+          
+          &:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }

@@ -8,7 +8,7 @@ import { FaIndianRupeeSign } from 'react-icons/fa6';
 const travelBusRoutes = ['chennai to banglore', 'chennai to hyderabad', 'hyderabad to banglore', 'hyderabad to chennai', 'banglore to chennai', 'banglore to hyderabad'];
 
 const Travels = () => {
-    const [selectedRoute, setSelectedRoute] = useState('');
+    const [selectedRoute, setSelectedRoute] = useState('hyderabad to banglore');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
