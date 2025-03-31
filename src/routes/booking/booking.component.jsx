@@ -94,7 +94,7 @@ const Booking = () => {
         e.preventDefault();
         
         if (validateForm()) {
-            // setIsSubmitting(true);
+            setIsSubmitting(true);
             const generatedBookingId = Math.random().toString(36).substring(2,10).toUpperCase()
             const bookingObject={
                 bookedDate:bookingDetails.date,
@@ -105,18 +105,19 @@ const Booking = () => {
                 bookingCost : room ? room.roomCost : travel.busCost,
                 bookingName:room ? `${room.hotelName+"!"+room.roomName}` : `${travel.busName+"!"+travel.busNo}`,
                 bookingInfo:room ? `${room.checkoutTime+'$'+room.hotelNumber+'$'+room.isAcAvailable+'$'+room.location}` : `${travel.tripTime+'$'+travel.driverNo+'$'+travel.isAcAvailable+'$'+travel.via}`,
-                bookingId:generatedBookingId
+                bookingId:generatedBookingId,
+                facilityType:room ? 'room' : 'travel'
             }
-            // try{
-            //     const bookingsRef = ref(realtimeDb,`userBookings/${user.uid}`)
-            //     await push(bookingsRef,bookingObject)
-            //     setBookingId(generatedBookingId)
-            //     setBookingConfirmed(true)
-            //     setIsSubmitting(false)
-            // }catch(e){
-            //     alert('unable to book try again later')
-            //     console.error(e)
-            // }
+            try{
+                const bookingsRef = ref(realtimeDb,`userBookings/${user.uid}`)
+                await push(bookingsRef,bookingObject)
+                setBookingId(generatedBookingId)
+                setBookingConfirmed(true)
+                setIsSubmitting(false)
+            }catch(e){
+                alert('unable to book try again later')
+                console.error(e)
+            }
         }
     };
 
@@ -349,12 +350,12 @@ const Booking = () => {
                             {travel && bookingDetails.passengers > 1 && (
                                 <div className="summary-row">
                                     <span>x {bookingDetails.passengers} passengers:</span>
-                                    <span>₹{travel.busCost * bookingDetails.passengers}</span>
+                                    <span>₹{travel.busCost.slice(0,travel.busCost.length-2) * bookingDetails.passengers}</span>
                                 </div>
                             )}
                             <div className="summary-row total">
                                 <span>Total:</span>
-                                <span>₹{room ? room.roomCost : (travel.busCost * bookingDetails.passengers)}</span>
+                                <span>₹{room ? room.roomCost : (Number(travel.busCost.slice(0,travel.busCost.length-2)) * Number(bookingDetails.passengers))}</span>
                             </div>
                         </div>
                         

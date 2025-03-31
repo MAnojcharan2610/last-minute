@@ -6,7 +6,6 @@ import { signOutUser } from '../../utils/firebase';
 const User = () => {
     const { user } = useUserContext();
     const [isLoading, setIsLoading] = useState(false);
-    console.log(user);
     
 
     const handleSignOut = async () => {
