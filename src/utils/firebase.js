@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth,GoogleAuthProvider,signInWithPopup } from "firebase/auth";
+import { getAuth,GoogleAuthProvider,signInWithPopup, signOut } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
@@ -23,5 +23,13 @@ export const signInWithGooglePopup =async()=>{
        await signInWithPopup(auth,provider);
   }catch(e){
       console.error('error while signing in with google popup',e)
+  }
+}
+
+export const signOutUser=async()=>{
+  try{
+    await signOut(auth)
+  }catch(e){
+    console.error(e)
   }
 }

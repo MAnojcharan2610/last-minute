@@ -30,7 +30,8 @@ const Navbar = () => {
     const navLinks = [
         { path: '/rooms', label: 'Rooms' },
         { path: '/travels', label: 'Travels' },
-        { path: '/user', label: 'User' }
+        { path: '/user', label: 'User' },
+        { path: '/my-bookings', label: 'My bookings' },
     ];
 
     return (
