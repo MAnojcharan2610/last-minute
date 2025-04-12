@@ -11,7 +11,7 @@ const MyBookings = () => {
     const [bookingType,setBookingType]=useState('All Bookings');
     const {user}=useUserContext();
     const [filteredData,setFilteredData]=useState([]);
-    const [state,setState]=useState('error'); //loading,empty,error
+    const [state,setState]=useState('loading'); //loading,empty,error
     const [data,setData]=useState([]);
 
     useEffect(()=>{

@@ -2,7 +2,7 @@ import './booking.styles.scss';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MdDirectionsBus, MdAcUnit, MdAccessTime, MdRoute, MdPeople, MdLocationOn} from 'react-icons/md';
-import {  FaRegCalendarAlt, FaUserAlt, FaPhoneAlt, FaEnvelope, FaCheck, FaCalendarAlt, FaMapMarkerAlt, FaMoneyBillWave } from 'react-icons/fa';
+import {  FaRegCalendarAlt, FaUserAlt, FaPhoneAlt, FaEnvelope, FaCheck, FaCalendarAlt, FaMapMarkerAlt, FaMoneyBillWave, FaCreditCard } from 'react-icons/fa';
 import { realtimeDb } from '../../utils/firebase';
 import { useUserContext } from '../../contexts/user.context';
 import { push,ref } from 'firebase/database';
@@ -19,12 +19,20 @@ const Booking = () => {
         date: '',
         passengers: room ? 1 : 1,
     });
+    const [cardDetails, setCardDetails] = useState({
+        cardNumber: '',
+        cardName: '',
+        expiry: '',
+        cvv: ''
+    });
     const [errors, setErrors] = useState({});
+    const [cardErrors, setCardErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [bookingConfirmed, setBookingConfirmed] = useState(false);
     const [bookingId, setBookingId] = useState('');
+    const [showPaymentForm, setShowPaymentForm] = useState(false);
 
-    // Redirect if no travel or room data
+  
     useEffect(() => {
         if (!travel && !room) {
             navigate('/');
@@ -41,6 +49,42 @@ const Booking = () => {
         // Clear error when user types
         if (errors[name]) {
             setErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
+        }
+    };
+
+    const handleCardInputChange = (e) => {
+        const { name, value } = e.target;
+        let formattedValue = value;
+
+        
+        if (name === 'cardNumber') {
+            formattedValue = value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim().slice(0, 19);
+        }
+        
+       
+        if (name === 'expiry') {
+            formattedValue = value.replace(/\//g, '');
+            if (formattedValue.length > 2) {
+                formattedValue = formattedValue.slice(0, 2) + '/' + formattedValue.slice(2, 4);
+            }
+        }
+        
+       
+        if (name === 'cvv') {
+            formattedValue = value.slice(0, 4);
+        }
+
+        setCardDetails(prev => ({
+            ...prev,
+            [name]: formattedValue
+        }));
+        
+     
+        if (cardErrors[name]) {
+            setCardErrors(prev => ({
                 ...prev,
                 [name]: ''
             }));
@@ -90,40 +134,95 @@ const Booking = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async(e) => {
+    const validateCardDetails = () => {
+        const newErrors = {};
+        
+        if (!cardDetails.cardNumber.trim()) {
+            newErrors.cardNumber = 'Card number is required';
+        } else if (cardDetails.cardNumber.replace(/\s/g, '').length < 16) {
+            newErrors.cardNumber = 'Card number must be at least 16 digits';
+        }
+        
+        if (!cardDetails.cardName.trim()) {
+            newErrors.cardName = 'Name on card is required';
+        }
+        
+        if (!cardDetails.expiry.trim()) {
+            newErrors.expiry = 'Expiry date is required';
+        } else if (!/^\d{2}\/\d{2}$/.test(cardDetails.expiry)) {
+            newErrors.expiry = 'Expiry date format should be MM/YY';
+        }
+        
+        if (!cardDetails.cvv.trim()) {
+            newErrors.cvv = 'CVV is required';
+        } else if (!/^\d{3,4}$/.test(cardDetails.cvv)) {
+            newErrors.cvv = 'CVV must be 3 or 4 digits';
+        }
+        
+        setCardErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = (e) => {
         e.preventDefault();
         
         if (validateForm()) {
+            setShowPaymentForm(true);
+        }
+    };
+
+    const handlePaymentSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (validateCardDetails()) {
             setIsSubmitting(true);
-            const generatedBookingId = Math.random().toString(36).substring(2,10).toUpperCase()
-            const bookingObject={
-                bookedDate:bookingDetails.date,
-                bookedMail:bookingDetails.email,
-                bookedName:bookingDetails.name,
-                noOfPassengers:bookingDetails.passengers,
-                bookedMobile:bookingDetails.phone,
-                bookingCost : room ? room.roomCost : travel.busCost,
-                bookingName:room ? `${room.hotelName+"!"+room.roomName}` : `${travel.busName+"!"+travel.busNo}`,
-                bookingInfo:room ? `${room.checkoutTime+'$'+room.hotelNumber+'$'+room.isAcAvailable+'$'+room.location}` : `${travel.tripTime+'$'+travel.driverNo+'$'+travel.isAcAvailable+'$'+travel.via}`,
-                bookingId:generatedBookingId,
-                facilityType:room ? 'room' : 'travel'
-            }
-            try{
-                const bookingsRef = ref(realtimeDb,`userBookings/${user.uid}`)
-                await push(bookingsRef,bookingObject)
-                setBookingId(generatedBookingId)
-                setBookingConfirmed(true)
-                setIsSubmitting(false)
-            }catch(e){
-                alert('unable to book try again later')
-                console.error(e)
-            }
+            
+            // Simulate payment processing
+            setTimeout(async () => {
+                const generatedBookingId = Math.random().toString(36).substring(2,10).toUpperCase()
+                const bookingObject={
+                    bookedDate:bookingDetails.date,
+                    bookedMail:bookingDetails.email,
+                    bookedName:bookingDetails.name,
+                    noOfPassengers:bookingDetails.passengers,
+                    bookedMobile:bookingDetails.phone,
+                    bookingCost : room ? room.roomCost : travel.busCost,
+                    bookingName:room ? `${room.hotelName+"!"+room.roomName}` : `${travel.busName+"!"+travel.busNo}`,
+                    bookingInfo:room ? `${room.checkoutTime+'$'+room.hotelNumber+'$'+room.isAcAvailable+'$'+room.location}` : `${travel.tripTime+'$'+travel.driverNo+'$'+travel.isAcAvailable+'$'+travel.via}`,
+                    bookingId:generatedBookingId,
+                    facilityType:room ? 'room' : 'travel'
+                }
+                try{
+                    const bookingsRef = ref(realtimeDb,`userBookings/${user.uid}`)
+                    await push(bookingsRef,bookingObject)
+                    setBookingId(generatedBookingId)
+                    setBookingConfirmed(true)
+                    setIsSubmitting(false)
+                }catch(e){
+                    alert('unable to book try again later')
+                    console.error(e)
+                }
+            }, 1500);
         }
     };
 
     const handleNewBooking = () => {
         navigate('/');
     };
+
+    // Determine card type based on first digits
+    const getCardType = (number) => {
+        const firstDigit = number.charAt(0);
+        const firstTwoDigits = number.substring(0, 2);
+        
+        if (firstDigit === '4') return 'visa';
+        if (firstTwoDigits >= '51' && firstTwoDigits <= '55') return 'mastercard';
+        if (firstTwoDigits === '34' || firstTwoDigits === '37') return 'amex';
+        if (firstDigit === '6') return 'discover';
+        return 'generic';
+    };
+
+    const cardType = getCardType(cardDetails.cardNumber.replace(/\s/g, ''));
 
     if (bookingConfirmed) {
         return (
@@ -176,6 +275,120 @@ const Booking = () => {
                     <button className="new-booking-btn" onClick={handleNewBooking}>
                         Make Another Booking
                     </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (showPaymentForm) {
+        return (
+            <div className="payment-container">
+                <div className="payment-form-wrapper">
+                    <h2>Payment Details</h2>
+                    
+                    <div className="payment-summary">
+                        <h3>Booking Summary</h3>
+                        <p>{room ? room.hotelName : travel.busName} {travel && `(Bus ${travel.busNo})`}</p>
+                        <p>Date: {new Date(bookingDetails.date).toLocaleDateString()}</p>
+                        <p>{room ? 'Guests' : 'Passengers'}: {bookingDetails.passengers}</p>
+                        <p className="total-amount">
+                            Total Amount: ₹{room ? room.roomCost : (Number(travel.busCost.slice(0,travel.busCost.length-2)) * Number(bookingDetails.passengers))}
+                        </p>
+                    </div>
+                    
+                    <form onSubmit={handlePaymentSubmit} className="payment-form">
+                        <div className="form-group">
+                            <label>
+                                <FaCreditCard /> Card Number
+                                {cardType !== 'generic' && (
+                                    <span className={`card-type ${cardType}`}>
+                                        {cardType.toUpperCase()}
+                                    </span>
+                                )}
+                            </label>
+                            <input
+                                type="text"
+                                name="cardNumber"
+                                value={cardDetails.cardNumber}
+                                onChange={handleCardInputChange}
+                                placeholder="•••• •••• •••• ••••"
+                                className={`card-input ${cardErrors.cardNumber ? 'error' : ''} ${cardType}`}
+                                maxLength="19"
+                            />
+                            {cardErrors.cardNumber && <span className="error-message">{cardErrors.cardNumber}</span>}
+                        </div>
+                        
+                        <div className="form-group">
+                            <label>Name on Card</label>
+                            <input
+                                type="text"
+                                name="cardName"
+                                value={cardDetails.cardName}
+                                onChange={handleCardInputChange}
+                                placeholder="JOHN DOE"
+                                className={cardErrors.cardName ? 'error' : ''}
+                            />
+                            {cardErrors.cardName && <span className="error-message">{cardErrors.cardName}</span>}
+                        </div>
+                        
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Expiry Date</label>
+                                <input
+                                    type="text"
+                                    name="expiry"
+                                    value={cardDetails.expiry}
+                                    onChange={handleCardInputChange}
+                                    placeholder="MM/YY"
+                                    className={cardErrors.expiry ? 'error' : ''}
+                                    maxLength="5"
+                                />
+                                {cardErrors.expiry && <span className="error-message">{cardErrors.expiry}</span>}
+                            </div>
+                            
+                            <div className="form-group">
+                                <label>CVV</label>
+                                <input
+                                    type="password"
+                                    name="cvv"
+                                    value={cardDetails.cvv}
+                                    onChange={handleCardInputChange}
+                                    placeholder="•••"
+                                    className={cardErrors.cvv ? 'error' : ''}
+                                    maxLength="4"
+                                />
+                                {cardErrors.cvv && <span className="error-message">{cardErrors.cvv}</span>}
+                            </div>
+                        </div>
+                        
+                        <button 
+                            type="submit" 
+                            className="process-payment-btn"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <div className="spinner-small"></div>
+                                    Processing Payment...
+                                </>
+                            ) : (
+                                <>Pay ₹{room ? room.roomCost : (Number(travel.busCost.slice(0,travel.busCost.length-2)) * Number(bookingDetails.passengers))}</>
+                            )}
+                        </button>
+                        
+                        <button 
+                            type="button" 
+                            className="back-btn"
+                            onClick={() => setShowPaymentForm(false)}
+                            disabled={isSubmitting}
+                        >
+                            Back to Booking Details
+                        </button>
+                    </form>
+                    
+                    <div className="secure-payment-info">
+                        <p>🔒 Secure payment processing. Your card details are protected.</p>
+                    </div>
                 </div>
             </div>
         );
@@ -362,16 +575,8 @@ const Booking = () => {
                         <button 
                             type="submit" 
                             className="submit-booking-btn"
-                            disabled={isSubmitting}
                         >
-                            {isSubmitting ? (
-                                <>
-                                    <div className="spinner-small"></div>
-                                    Processing...
-                                </>
-                            ) : (
-                                <>Confirm Booking</>
-                            )}
+                            Proceed to Payment
                         </button>
                     </form>
                 </div>
